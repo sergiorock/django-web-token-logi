@@ -1,0 +1,26 @@
+services:
+  db:
+    image: postgres:14.1-alpine
+    volumes:
+      - data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=login
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
+    restart: always
+  web:
+    build: .
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "8000:8000"  # Mapeo de puerto del contenedor (8000) al puerto de la máquina local (8000)
+    depends_on:
+      - db
+    restart: always
+    volumes:
+      - ./app:/usr/src/app  # Montando el directorio 'app' local al contenedor
+
+
+volumes:
+  data:
