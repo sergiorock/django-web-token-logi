@@ -1,7 +1,6 @@
-python manage.py migrate
+#!/bin/bash
 
-echo "Running seed"
-python manage.py seed
+python manage.py migrate
 
 # Start server
 echo "Starting server..."

@@ -2,6 +2,9 @@ FROM python:3.9-bullseye
 
 WORKDIR /usr/src/app/web_token_auth
 
+# Expose the Django port
+EXPOSE 8000
+
 # Set environment variables 
 # Prevents Python from writing pyc files to disk
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -16,9 +19,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-# Expose the Django port
-EXPOSE 8000
+COPY ./.docker/entrypoint.sh /docker/entrypoint.sh
+# Dar permisos de ejecución al script
+RUN chmod +x /docker/entrypoint.sh
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Configurar el script como entrypoint
+ENTRYPOINT ["/docker/entrypoint.sh"]
 
 
