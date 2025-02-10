@@ -13,22 +13,14 @@ def login(request):
 
 @api_view(['POST'])
 def register(request):
-  print(request.data)
-  serializer = UserSerializer(data=request.data)
+    serializer = UserSerializer(data=request.data)
+    
+    if serializer.is_valid():
+        user = serializer.save()  # Ya guarda la contraseña encriptada
+        token = Token.objects.create(user=user)
+        return Response({'token': token.key, 'user': serializer.data}, status=status.HTTP_201_CREATED)
 
-  if serializer.is_valid():
-    serializer.save()
-
-    user = User.objects.get(username=serializer.data['username'])
-    user.set_password(serializer.data['password'])
-    user.save()
-
-    token =  Token.objects.create(user=user)
-    return Response({'token': token.key, 'user': serializer.data}, status=status.HTTP_201_CREATED)
-   
-
-  return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 def profile(request):
